@@ -1,5 +1,5 @@
 <launch>
-  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="model" default="waffle" doc="model type [burger, waffle, waffle_pi]"/>
   <arg name="x_pos" default="-3.0"/>
   <arg name="y_pos" default="1.0"/>
   <arg name="z_pos" default="0.0"/>
@@ -13,11 +13,17 @@
     <arg name="debug" value="false"/>
   </include>
 
+  <!-- Incldue the DS4 driver launch file -->
+  <include file="$(find ds4_driver)/launch/ds4_driver.launch" />
+
+  <!-- Finally launch our node -->
+  <node name="ds4_teleop" pkg="turtlebot3_ds4_keyop" type="ds4_keyop.py" output="screen"/>
+
   <!-- Launch robot state publisher to visualize joint states in rviz -->
-    <node name="robot_state_publisher" type="robot_state_publisher" pkg="robot_state_publisher"/>
-    <!-- Also launch rviz with the config file -->
-    <!-- Here we will visualize the robot as well as the laser scan that the laser scanner is producing -->
-    <node name="rviz" type="rviz" pkg="rviz" args="-d $(find turtlebot3_gazebo)/rviz/turtlebot3_gazebo_model.rviz"/>
+  <node name="robot_state_publisher" type="robot_state_publisher" pkg="robot_state_publisher"/>
+  <!-- Also launch rviz with the config file -->
+  <!-- Here we will visualize the robot as well as the laser scan that the laser scanner is producing -->
+  <node name="rviz" type="rviz" pkg="rviz" args="-d $(find turtlebot3_gazebo)/rviz/turtlebot3_gazebo_model.rviz"/>
 
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
 
